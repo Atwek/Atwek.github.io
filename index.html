@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+
+<meta charset="utf-8">
+
+<style>
+.slidecontainer {
+  width: 710px;
+  padding-left:60px;
+}
+
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 25px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 17px;
+  height: 25px;
+  background: #69b3a2;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  background: #69b3a2;
+  cursor: pointer;
+}
+
+h1{
+  padding-left:175px;
+}
+h2{
+  padding-left:210px;
+  margin-top:0;
+  margin-bottom:0;
+}
+h4{
+  padding-left:350px;
+  margin-top:0;
+  margin-bottom:0;
+}
+a{
+  padding-left:375px;
+}
+</style>
+
+<h1>H517 Visualization Design Project 1</h1>
+<h2>London Cholera Epidemic Map (1854)</h2>
+
+
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+
+<div id="title"> </div>
+
+<!-- Create a div where the graph will take place -->
+<div id="my_dataviz"></div>
+
+<h4>Deaths Per Day View</h4>
+<div class="slidecontainer">
+  <input type="range" min="1" max="42" steps="1" value="1" class="slider" id="myRange">
+</div>
+<div id="range_label"></div>
+
+<div id="my_dataviz2"></div>
+
+<a href ="About.html">About Page</a>
+
+<script>
+
+streets=[
+[-30, 102, "Legend"],
+[360, 170, "Worker House"],
+[390, 310, "Golden Square"],
+[468, 200,"Brewery"],
+[380, 220,"Broad Street"],
+[235,250,"Regency Street"],
+[310,75,"Oxford Street"],
+[355,130,"Great Malborough Street"],
+[515,425,"Regent Piccadilly Circus"],
+[420,350,"Brewer Street"],
+[500,180,"Berwick Street"]
+]
+
+keys=["Pumps","Deaths(M)","Deaths(F)","Landmark"]
+
+// set the dimensions and margins of the graph
+var margin = {top: 10, right: 30, bottom: 30, left: 60},
+    width = 800 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+// append the svg object to the body of the page
+var svg = d3.select("#my_dataviz")
+  .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+
+//test to see->scale x and y
+var x = d3.scaleLinear()
+  .domain([2, 20])
+  .range([0, width]);
+var y = d3.scaleLinear()
+  .domain([3,19])
+  .range([height, 0]);
+
+svg.append("rect")
+  .attr("x", -40 )
+  .attr("y", 18)
+  .attr("width", 90)
+  .attr("height", 120)
+  .style("fill", "white")
+  .style("stroke-width",1.5)
+  .style("stroke","black")
+
+svg.append("rect")
+  .attr("x", -36)
+  .attr("y", 30)
+  .attr("width", 12)
+  .attr("height", 12)
+  .style("fill", "black")
+  .style("stroke","black")
+  .style("opacity",1.0)
+svg.selectAll("legendText")
+  .data(keys)
+  .enter()
+  .append("text")
+  .attr("x", -22)
+  .attr("y", function(d,i){return 38+i*22})
+  .text(function(d){return d})
+  .attr("text-anchor", "left")
+  .style("alignment-baseline", "middle");
+svg
+  .append("circle")
+  .attr("cx", -30)
+  .attr("cy", 58)
+  .attr("r", 3.5)
+  .style("fill","#fc8d62")
+svg
+  .append("circle")
+  .attr("cx", -30)
+  .attr("cy", 80)
+  .attr("r", 3.5)
+  .style("fill","#8da0cb")
+
+// set the dimensions and margins of the graph
+var margin2 = {top: 10, right: 30, bottom: 70, left: 60},
+    width2 = 800 - margin2.left - margin2.right,
+    height2 = 500 - margin2.top - margin2.bottom;
+
+// append the svg object to the body of the page
+var svg2 = d3.select("#my_dataviz2")
+  .append("svg")
+    .attr("width", width2 + margin2.left + margin2.right)
+    .attr("height", height2 + margin2.top + margin2.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + margin2.left + "," + margin2.top + ")");
+
+//test to see->scale x and y
+var x2 = d3.scaleTime()
+  .range([0, width2]);
+var y2 = d3.scaleLinear()
+  .range([height2, 0]);
+
+// set the dimensions and margins of the graph
+var margin3 = {top: 0, right: 30, bottom: 50, left: 60},
+    width3 = 800 - margin3.left - margin3.right,
+    height3 = 35 - margin3.top - margin3.bottom;
+
+//test to see->scale x and y
+var x3 = d3.scaleTime()
+  .range([0, width3]);
+var y3 = d3.scaleLinear()
+  .range([height3, 0]);
+
+// append the svg object to the body of the page
+var svg3 = d3.select("#range_label")
+  .append("svg")
+    .attr("width", width3 + margin3.left + margin3.right)
+    .attr("height", height3 + margin3.top + margin3.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + margin3.left + "," + margin3.top + ")");
+
+d3.json("streets.json", function(data) {
+  
+  var line = d3.line()
+      .x(function(d) { return x(d.x); })
+      .y(function(d) { return y(d.y); });
+    
+  var group = svg.selectAll('path')
+    .data(data)
+    .enter()
+    .append('path')
+    .attr("d", line)
+    .attr("stroke", "black")
+    .attr("fill", "none")
+    .attr("stroke-width", 1.5)
+    ;
+
+})
+
+var arc = d3.symbol().type(d3.symbolTriangle).size(120);
+
+svg.selectAll(".point")
+    .data(streets)
+  .enter().append("path")
+    .attr('d', arc)
+    .attr("fill", "#66c2a5")
+    .attr("stroke", "black")
+    .attr("opacity", 1.0)
+    .attr("transform", function(d) { return "translate(" + d[0] + "," + d[1] + ")"; })
+
+// Read the data
+d3.csv("pumps.csv", function(data) {
+
+  // Add pumps
+  svg
+    .append('g')
+    .selectAll("pumps")
+    .data(data)
+    .enter()
+    .append("rect")
+      .attr("x", function (d) { return x(d.x); } )
+      .attr("y", function (d) { return y(d.y); } )
+      .attr("width", 12)
+      .attr("height", 12)
+      .style("fill", "black")
+      .style("stroke","black")
+      .style("opacity",1.0)
+
+})
+
+// Read the data
+d3.csv("deaths_age_sex.csv", function(data) {
+  deaths_age_sex=data
+
+    // Read the data
+  d3.csv("deathdays.csv", function(data) {
+    deathdays=data
+
+      // X axis
+    var x3 = d3.scaleBand()
+      .range([ 0, width3 ])
+      .domain(data.map(function(d) { return d.date; }))
+      //.padding(0.2);
+    svg3.append("g")
+      //.attr("transform", "translate(0," + height3 +")")
+      .call(d3.axisBottom(x3))
+      .selectAll("text")
+        .attr("transform", "translate(0,0)rotate(-45)")
+        .style("text-anchor", "end");
+
+    // Add Y axis
+    var y2 = d3.scaleLinear()
+      .domain([0, 150])
+      .range([ height2, 0]);
+    svg2.append("g")
+      .call(d3.axisLeft(y2));
+
+      // X axis
+  var x2 = d3.scaleBand()
+    .range([ 0, width2 ])
+    .domain(data.map(function(d) { return d.date; }))
+    .padding(0.2);
+  svg2.append("g")
+    .attr("transform", "translate(0," + height2 +")")
+    .call(d3.axisBottom(x2))
+    .selectAll("text")
+      .attr("transform", "translate(-10,0)rotate(-45)")
+      .style("text-anchor", "end");
+
+    // Bars
+    svg2.selectAll("mybar")
+      .data(data)
+      .enter()
+      .append("rect")
+        .attr("x", function(d) { return x2(d.date); })
+        .attr("y", function(d) { return y2(d.deaths); })
+        .attr("width", x2.bandwidth())
+        .attr("height", function(d) { return height2 - y2(d.deaths); })
+        .attr("fill", "#69b3a2")
+
+    svg2.append("text")
+      .attr("transform", "translate("+width2/2+","+(height2 + margin2.top + 40) + ")")
+      .style("text-anchor", "middle")
+      .style("font-size", 20)
+      .text("Date");
+
+        // text label for the y axis
+    svg2.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - margin2.left)
+        .attr("x",0 - (height2 / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .style("font-size", 20)
+        .text("Deaths Per Day");  
+
+  function updateChart(selectedValue) {
+    d3.selectAll("circle").remove()     // remove old circles
+    var dataFilter=deaths_age_sex.filter(function(d,i) {return i<selectedValue})
+
+      // Color scale: give me a specie name, I return a color
+      var color = d3.scaleOrdinal()
+        .domain(["1", "0" ])
+        .range([ "#fc8d62", "#8da0cb"])
+
+      // Add dots
+      svg
+        .append('g')
+        .selectAll("circle")
+        .data(dataFilter)
+        .enter()
+        .append("circle")
+          .attr("cx", function (d) { return x(+d.x); } )
+          .attr("cy", function (d) { return y(+d.y); } )
+          .attr("r", 3.5)
+          .style("fill", function(d){return color(d.gender)})
+      svg
+        .append("circle")
+        .attr("cx", -30)
+        .attr("cy", 58)
+        .attr("r", 3.5)
+        .style("fill","#fc8d62")
+      svg
+        .append("circle")
+        .attr("cx", -30)
+        .attr("cy", 80)
+        .attr("r", 3.5)
+        .style("fill","#8da0cb")
+
+  }
+
+ // Listen to the slider
+  d3.select("#myRange").on("change", function(d){
+    selectedValue = this.value
+
+    selectedDates=data.filter(function(d,i){return i<selectedValue })
+    var totalDead=d3.sum(selectedDates, d=>d.deaths)
+    
+    updateChart(totalDead)
+  })
+
+  })
+})
+
+
+</script>
