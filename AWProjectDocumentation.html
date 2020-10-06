@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Documentation Page</h1>
+
+<p>By: Andrew Wek
+<br>Date: 10/6/2020
+<br>Class: IUPUI H517 Visualization Design, Analysis, & Evaluation
+<br>Professor: Khairi Reda</p>
+
+<p>The starting point for this project was to examine what data I had. As the backbone of the criteria was recreating the map, this provided
+a good starting point for loading the data and manipulating it from there. There are limitations to how much data could be added to the 
+map before it started to become cluttered, so this was a primary thought during development. The primary purpose of this visualization
+was to present an obvious epicenter for the cholera infections, so the primary focus of the map should be to link positional data with
+the deaths.
+ </p>
+ <p>The deaths_age_sex.csv data included positional data, so this would be helpful towards assigning the locations to all of the fatalities.The streets.json data would give the map outline to give the death positions context. As the pumps (considering this is analyzing waterborne cholera) were interacting with the fatalities, it was also necessary to present the pump locations on the map as well. Thus, the map would need to include the fatalities, pumps, and streets.
+ </p>
+<p>This was the first step in this project. This required some thought into how to layer each of the svg layers and how to access some of the data that interacted across uploaded files. Once I learned enough d3 to layer all of these onto the same svg, I used the same skills to make a bar graph of the deaths over a period of time. This required some basic research into a clean, readable way to place all of the long date strings on an axis, but functionally was not a complex requirement.
+</p>
+<p>To show progression over time could have been split into multiple stationary graphs, but would be the most persuasive incorporating an interactivity in the visual. I determined that a slider range would be the most intuitive to show a linear progression of time. While it may have been possible to have the user access the bar graph simultaneously, it would have required the user to view both visuals at the same time. This would have been difficult without dual monitors. The CSS range slider with a date axis seemed the most visually appealing as well as space efficient.
+</p>
+<p> This section took a great deal of time to figure out the syntax to effectively implement. The filter aspect of it was achieved using the filter function and some console.log debugging to confirm the right data was being loaded. Once the correct data was being transferred by the range slider, it took some figuring out to make sure that the dots were being added and subtracted per the data. The eventual solution was to have all the dots on the first visual removed on each range-slider change and then added back per the filter (and some hard coded for the legend). To also incorporate gender data about the deceased, a color function was added to color code the "death dots". This made it easily apparent what gender the deaths were.
+</p>
+<p>At this point it was necessary to make sure that all of the components of the visuals were clear to the audience. I added a legend to communicate the symbols on the map and the axis on the bar graph. This made most of the components clear to an untrained audience. I used color brewer to make sure that the colors were distinguishable to a color blind individual.
+</p>
+<p>The last section that was attempted was to add landmark data to the map. I referred to the actual London map and pinpointed a number of landmarks to include in the map. I added them as an array of objects and approximated their position on the map. I added a new shape to differentiate them from other items (a triangle to separate from a square or dot) and labeled them appropriately. As the dots in the interactive covered these landmarks up during viewing, I wanted to make sure that they were legible even with the death dots covering the map. I added a mouseover tool-tip to create a bubble while viewing that would pop out the name of the landmark while hovering over the name on the map. This significantly increased visibility. Titles and links to this documenation page, about page, and video presentation were added to complete the assignment.
+</p>
+</body>
+</html>
